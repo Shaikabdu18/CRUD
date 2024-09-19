@@ -19,13 +19,15 @@ const productSchema = mongoose.Schema(
       type: String,
       required: false,
     },
-    
+    postedBy:{
+      type:mongoose.Schema.Types.ObjectId,
+      ref:"User",
+      required:true
+    }
   },
   {
     timestamps: true
   }
 )
 
-const product = mongoose.model('product',productSchema)
-
-module.exports = product;
+module.exports = mongoose.model("Product",productSchema )
