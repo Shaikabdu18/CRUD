@@ -1,4 +1,4 @@
-const Product = require("../models/Productmodels")
+const Product = require("../models/productModels")
 
 exports.allProduct=async(req,res) =>{
   try {
@@ -38,14 +38,16 @@ try {
 exports.updateProduct=async(req,res)=>{
   try {
     const {id} = req.params;
-    const product = await Product.findByIdAndUpdate(id,req.body);
+    const product = await Product.findById(id);
     // we cannot find any product in database
     if(!product){
       return res.status(404).json({message:`cannot find any product with ID${id}`})
     }
-    const updateProduct = await Product.findById(id);
+    const user = req.user.id
+    if(product.postedBy.toString()!=user) return res.status(403).json({msg:"You are not authorized to update this product"})
+     await Product.findByIdAndUpdate(id,req.body)
 
-    res.status(200).json(updateProduct);
+    res.status(200).json({msg:"Product Updated Successfully"});
     
   } catch (error) {
     res.status(500).json({message:error.message})
@@ -54,17 +56,23 @@ exports.updateProduct=async(req,res)=>{
 
 //delete a product
 
-exports.deleteProduct=async(req,res)=>{
+exports.deleteProduct = async (req, res) => {
   try {
-    const {id} = req.params;
-    // console.log(id)
-    // console.log(req.query)
-    const product = await Product.findByIdAndDelete(id);
-    if(!product){
-      return res.status(404).json({message:`cannot find any product with ID${id}`})
+    const { id } = req.params;
+    const product = await Product.findById(id);
+    
+    if (!product) {
+      return res.status(404).json({ message: `Cannot find any product with ID ${id}` });
     }
-    res.status(200).json({msg:"Product Deleted SuccessFully"})
+    const userId = req.user.id;
+
+    if (product.postedBy.toString() !== userId) {
+      return res.status(403).json({ message: "You are not authorized to delete this product" });
+    }
+    await Product.findByIdAndDelete(id);
+
+    res.status(200).json({ message: "Product deleted successfully" });
   } catch (error) {
-    res.status(500).json({message:error.message})
+    res.status(500).json({ message: error.message });
   }
-}
+};

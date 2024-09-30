@@ -5,7 +5,7 @@ exports.verifyToken=(req,res,next)=>{
    token = req.header("Authorization")
   if(!token) return res.status(400).json({msg:"UnAuthorized No token Provided"})
   const verify = jwt.verify(token,process.env.JWT)
-  console.log(verify)
+  // console.log(verify)
   req.user = verify
   next();
     

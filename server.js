@@ -3,12 +3,15 @@ const app = express();
 const mongoose = require('mongoose');
 const productRoutes = require("./routes/productRoutes")
 const authRoutes = require("./routes/authRoutes")
+const orderRoutes = require("./routes/orderRoutes")
 const dotenv = require("dotenv")
 dotenv.config()
 
 app.use(express.json());
 app.use("/api",productRoutes)
 app.use("/api",authRoutes)
+app.use("/api",orderRoutes)
+
 
 
 
